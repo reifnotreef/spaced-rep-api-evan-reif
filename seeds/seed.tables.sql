@@ -21,9 +21,9 @@ BEGIN;
   INSERT INTO "word"
     ("id", "language_id", "original", "translation", "next")
   VALUES
-    (1, 1, 'prius', 'before', 2),
-    (2, 1, 'ignis', 'fire', 3),
-    (3, 1, 'bellator', 'warrior', 4),
+    (1, 1, 'semper', 'always', 2),
+    (2, 1, 'ubi', 'where', 3),
+    (3, 1, 'sub', 'under', 4),
     (4, 1, 'perfide', 'rogue', 5),
     (5, 1, 'sagittarius', 'archer', 6),
     (6, 1, 'malleus', 'hammer', 7),
