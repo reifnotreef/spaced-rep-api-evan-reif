@@ -70,7 +70,6 @@ const UserService = {
         ['tectum', 'roof', null]
       ];
 
-
       const [languageHeadId] = await trx.into("word").insert(
         languageWords.map(([original, translation, nextInc]) => ({
           language_id: languageId.id,

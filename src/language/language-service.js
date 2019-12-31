@@ -27,6 +27,47 @@ const LanguageService = {
         "incorrect_count"
       )
       .where({ language_id });
+  },
+
+  updateLanguageHead(db, user_id, newHead) {
+    return db
+      .from("language")
+      .where("language.user_id", user_id)
+      .update({ head: newHead });
+  },
+
+  correctAnswer(db, id) {
+    return db
+      .from("word")
+      .where({ id })
+      .increment("correct_count", 1);
+  },
+
+  incorrectAnswer(db, id) {
+    return db
+      .from("word")
+      .where({ id })
+      .increment("incorrect_count", 1);
+  },
+
+  incrementTotalScore(db, user_id) {
+    return db
+      .from("language")
+      .where({ user_id: user_id })
+      .increment("total_score", 1);
+  },
+
+  updateMemValue(db, id, mem) {
+    return db
+      .from("word")
+      .where({ id })
+      .update({ memory_value: mem });
+  },
+  updateNextValue(db, id, nex) {
+    return db
+      .from("word")
+      .where({ id })
+      .update({ next: nex });
   }
 };
 
