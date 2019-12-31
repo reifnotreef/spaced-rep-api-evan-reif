@@ -154,8 +154,8 @@ describe('Language Endpoints', function () {
         testWords,
       )
     })
-
-    it.skip(`responds with 400 required error when 'guess' is missing`, () => {
+// working
+    it(`post guess responds with 400`, () => {
       const postBody = {
         randomField: 'test random field',
       }
