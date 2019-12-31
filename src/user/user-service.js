@@ -45,7 +45,7 @@ const UserService = {
     return db.transaction(async trx => {
       const [languageId] = await trx
         .into("language")
-        .insert([{ name: "French", user_id }], ["id"]);
+        .insert([{ name: "Latin", user_id }], ["id"]);
 
       // when inserting words,
       // we need to know the current sequence number
@@ -56,15 +56,20 @@ const UserService = {
         .first();
 
       const languageWords = [
-        ["entraine toi", "practice", 2],
-        ["bonjour", "hello", 3],
-        ["maison", "house", 4],
-        ["développeur", "developer", 5],
-        ["traduire", "translate", 6],
-        ["incroyable", "amazing", 7],
-        ["chien", "dog", 8],
-        ["chat", "cat", null],
+        ['semper', 'always', 2],
+        ['ubi', 'where', 3],
+        ['sub', 'under', 4],
+        ['perfide', 'rogue', 5],
+        ['sagittarius', 'archer', 6],
+        ['malleus', 'hammer', 7],
+        ['panis', 'bread', 8],
+        ['lodix', 'lodix', 9],
+        ['rota', 'wheel', 10],
+        ['fenestra', 'window', 11],
+        ['janua', 'door', 12],
+        ['tectum', 'roof', null]
       ];
+
 
       const [languageHeadId] = await trx.into("word").insert(
         languageWords.map(([original, translation, nextInc]) => ({
