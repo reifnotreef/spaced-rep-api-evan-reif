@@ -3,11 +3,19 @@ const LanguageService = {
     return db
       .from('language')
       .select(
+<<<<<<< HEAD
         'language.id',
         'language.name',
         'language.user_id',
         'language.head',
         'language.total_score'
+=======
+        "language.id",
+        "language.name",
+        "language.user_id",
+        "language.head",
+        "language.total_score",
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
       )
       .where('language.user_id', user_id)
       .first();
@@ -16,6 +24,7 @@ const LanguageService = {
     return db
       .from('word')
       .select(
+<<<<<<< HEAD
         'id',
         'language_id',
         'original',
@@ -28,6 +37,21 @@ const LanguageService = {
       .where({ language_id });
   },
   getTranslation(db, word_id) {
+=======
+        "id",
+        "language_id",
+        "original",
+        "translation",
+        "next",
+        "memory_value",
+        "correct_count",
+        "incorrect_count",
+      )
+      .where({ language_id });
+  },
+
+  updateHead(db, user_id, newHead) {
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
     return db
       .from('word')
       .select('id','translation', 'memory_value', 'correct_count', 'incorrect_count')
@@ -38,6 +62,7 @@ const LanguageService = {
     console.log('here');
     console.log(word);
     return db
+<<<<<<< HEAD
       .from('word')
       .update({
         memory_value: word.memory_value * 2,
@@ -46,9 +71,15 @@ const LanguageService = {
       .where({id: word.id})
       .returning('*')
       .then(([word]) => word)
+=======
+      .from("word")
+      .where(id, id)
+      .increment("correct_count");
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
   },
   incorrectAnswer(db, word) {
     return db
+<<<<<<< HEAD
       .from('word')
       .update({
         memory_value: 1,
@@ -57,9 +88,15 @@ const LanguageService = {
       .where({ id: word.id })
       .returning('*')
       .then(([word]) => word);
+=======
+      .from("word")
+      .where(id, id)
+      .increment("incorrect_count");
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
   },
   updateTotalScore(db, language) {
     return db
+<<<<<<< HEAD
       .from('language')
       .update({
         total_score: language.total_score + 1,
@@ -86,5 +123,25 @@ const LanguageService = {
       .first()
   }
 }
+=======
+      .from("language")
+      .where({ user_id: user_id })
+      .increment("total_score");
+  },
+
+  updateMemory(db, id, newMem) {
+    return db
+      .from("word")
+      .where(id, id)
+      .update({ memory_value: newMem });
+  },
+  updateNext(db, id, nextItem) {
+    return db
+      .from("word")
+      .where(id, id)
+      .update(next, nextItem);
+  },
+};
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
 
 module.exports = LanguageService;
