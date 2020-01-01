@@ -40,24 +40,21 @@ const LanguageService = {
     return db
       .from("word")
       .where(id, id)
-      .increment("correct_count")
-      .returning("correct_count");
+      .increment("correct_count");
   },
 
   incorrectAnswer(db, id) {
     return db
       .from("word")
       .where(id, id)
-      .increment("incorrect_count")
-      .returning("incorrect_count");
+      .increment("incorrect_count");
   },
 
   incrementTotalScore(db, user_id) {
     return db
       .from("language")
       .where({ user_id: user_id })
-      .increment("total_score")
-      .returning("total_score");
+      .increment("total_score");
   },
 
   updateMemory(db, id, newMem) {
@@ -70,8 +67,7 @@ const LanguageService = {
     return db
       .from("word")
       .where(id, id)
-      .update(next, nextItem)
-      .returning("next");
+      .update(next, nextItem);
   },
 };
 

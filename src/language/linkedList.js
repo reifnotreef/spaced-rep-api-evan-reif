@@ -28,7 +28,7 @@ class LinkedList {
       while (last.next) {
         last = last.next;
       }
-      tail.next = node;
+      last.next = node;
     }
     this.size++;
   }

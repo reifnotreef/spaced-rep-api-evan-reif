@@ -22,7 +22,7 @@ describe("Language Endpoints", function() {
   /**
    * @description Endpoints for a language owned by a user
    **/
-  describe.skip(`Endpoints protected by user`, () => {
+  describe(`Endpoints protected by user`, () => {
     const languageSpecificEndpoint = [
       {
         title: `GET /api/language/head`,
@@ -63,7 +63,7 @@ describe("Language Endpoints", function() {
   /**
    * @description Get languages for a user
    **/
-  describe.skip(`GET /api/language`, () => {
+  describe(`GET /api/language`, () => {
     const [usersLanguage] = testLanguages.filter(
       lang => lang.user_id === testUser.id,
     );
@@ -116,7 +116,7 @@ describe("Language Endpoints", function() {
   /**
    * @description Get head from language
    **/
-  describe.skip(`GET /api/language/head`, () => {
+  describe(`GET /api/language/head`, () => {
     const usersLanguage = testLanguages.find(l => l.user_id === testUser.id);
     const headWord = testWords.find(w => w.language_id === usersLanguage.id);
 
@@ -129,7 +129,7 @@ describe("Language Endpoints", function() {
       );
     });
 
-    it.skip(`responds with 200 and user's languages`, () => {
+    it(`responds with 200 and user's languages`, () => {
       return supertest(app)
         .get(`/api/language/head`)
         .set("Authorization", helpers.makeAuthHeader(testUser))
@@ -238,7 +238,7 @@ describe("Language Endpoints", function() {
           });
       });
 
-      it.skip(`moves the word 2 spaces, increases score and correct count`, async () => {
+      it(`moves the word 2 spaces, increases score and correct count`, async () => {
         let correctPostBody = {
           guess: testLanguagesWords[0].translation,
         };
