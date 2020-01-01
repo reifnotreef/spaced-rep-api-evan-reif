@@ -71,93 +71,97 @@ languageRouter.post("/guess", jsonBodyParser, async (req, res, next) => {
   if (guess === undefined) {
     return res.status(400).json({ error: "Missing 'guess' in request body" });
   }
-  try {
-    const language = await LanguageService.getUsersLanguage(
+  const data = await Promise.all(
+    language = LanguageService.getUsersLanguage(
       req.app.get("db"),
       req.language.user_id,
-    );
-    const words = await LanguageService.getLanguageWords(
+    ),
+    words = LanguageService.getLanguageWords(
       req.app.get("db"),
       req.language.id,
-    );
-  //   const word = words.find(element => element.id === language.head);
-  //   const list = new linkedList();
-  //   await LanguageService.updateLanguageHead(
-  //     req.app.get("db"),
-  //     req.language.user_id,
-  //     words.find(element => element.id === language.head).next,
-  //   );
-  //   let currWord = words.find(element => element.id === language.head);
-  //   while (currWord.next !== null) {
-  //     list.insertLast(currWord);
-  //     currWord = words.find(element => element.id === currWord.next);
-  //   }
-  //   list.insertLast(currWord);
-  //   list.remove(word);
-  //   if (guess === word.translation) {
-  //     await LanguageService.correctAnswer(
-  //       req.app.get("db"),
-  //       word.id,
-  //       word.correct_count,
-  //     );
-  //     await LanguageService.incrementTotalScore(
-  //       req.app.get("db"),
-  //       req.language.user_id,
-  //       language.total_score,
-  //     );
-  //     await LanguageService.updateMemValue(
-  //       req.app.get("db"),
-  //       word.id,
-  //       word.memory_value * 2,
-  //     );
-  //     list.insertAt(word, word.memory_value * 2);
-  //   } else {
-  //     await LanguageService.incorrectAnswer(
-  //       req.app.get("db"),
-  //       word.id,
-  //       word.incorrect_count,
-  //     );
-  //     await LanguageService.updateMemValue(req.app.get("db"), word.id, 1);
-  //     list.insertAt(word, 1);
-  //   }
-  //   currWord = list.head;
-  //   list.display();
-  //   while (currWord.next !== null) {
-  //     await LanguageService.updateNextValue(
-  //       req.app.get("db"),
-  //       currWord.value.id,
-  //       currWord.next.value.id,
-  //     );
-  //     currWord = currWord.next;
-  //   }
+    )
+  )
+  const startingList = new linkedList();
+  data.words.forEach(word => startingList.pushItem(word))
+  startingList.display()
+    //   const word = words.find(element => element.id === language.head);
+    //   const list = new linkedList();
+    //   await LanguageService.updateLanguageHead(
+    //     req.app.get("db"),
+    //     req.language.user_id,
+    //     words.find(element => element.id === language.head).next,
+    //   );
+    //   let currWord = words.find(element => element.id === language.head);
+    //   while (currWord.next !== null) {
+    //     list.insertLast(currWord);
+    //     currWord = words.find(element => element.id === currWord.next);
+    //   }
+    //   list.insertLast(currWord);
+    //   list.remove(word);
+    //   if (guess === word.translation) {
+    //     await LanguageService.correctAnswer(
+    //       req.app.get("db"),
+    //       word.id,
+    //       word.correct_count,
+    //     );
+    //     await LanguageService.incrementTotalScore(
+    //       req.app.get("db"),
+    //       req.language.user_id,
+    //       language.total_score,
+    //     );
+    //     await LanguageService.updateMemValue(
+    //       req.app.get("db"),
+    //       word.id,
+    //       word.memory_value * 2,
+    //     );
+    //     list.insertAt(word, word.memory_value * 2);
+    //   } else {
+    //     await LanguageService.incorrectAnswer(
+    //       req.app.get("db"),
+    //       word.id,
+    //       word.incorrect_count,
+    //     );
+    //     await LanguageService.updateMemValue(req.app.get("db"), word.id, 1);
+    //     list.insertAt(word, 1);
+    //   }
+    //   currWord = list.head;
+    //   list.display();
+    //   while (currWord.next !== null) {
+    //     await LanguageService.updateNextValue(
+    //       req.app.get("db"),
+    //       currWord.value.id,
+    //       currWord.next.value.id,
+    //     );
+    //     currWord = currWord.next;
+    //   }
 
-  //   const newWords = await LanguageService.getLanguageWords(
-  //     req.app.get("db"),
-  //     req.language.id,
-  //   );
-  //   const newWord = newWords.find(element => element.id === language.head);
-  //   const newLanguage = await LanguageService.getUsersLanguage(
-  //     req.app.get("db"),
-  //     req.language.user_id,
-  //   );
+    //   const newWords = await LanguageService.getLanguageWords(
+    //     req.app.get("db"),
+    //     req.language.id,
+    //   );
+    //   const newWord = newWords.find(element => element.id === language.head);
+    //   const newLanguage = await LanguageService.getUsersLanguage(
+    //     req.app.get("db"),
+    //     req.language.user_id,
+    //   );
 
-  //   await LanguageService.updateNextValue(
-  //     req.app.get("db"),
-  //     currWord.value.id,
-  //     null,
-  //   );
-  //   const responseObject = {
-  //     nextWord: newWords.find(nw => nw.id === newLanguage.head).original,
-  //     wordCorrectCount: newWord.correct_count,
-  //     wordIncorrectCount: newWord.incorrect_count,
-  //     totalScore: newLanguage.total_score,
-  //     answer: word.translation,
-  //     isCorrect: guess === word.translation,
-  //   };
-  //   res.json(responseObject);
-  // } catch (error) {
-  //   next(error);
-  // }
+    //   await LanguageService.updateNextValue(
+    //     req.app.get("db"),
+    //     currWord.value.id,
+    //     null,
+    //   );
+    //   const responseObject = {
+    //     nextWord: newWords.find(nw => nw.id === newLanguage.head).original,
+    //     wordCorrectCount: newWord.correct_count,
+    //     wordIncorrectCount: newWord.incorrect_count,
+    //     totalScore: newLanguage.total_score,
+    //     answer: word.translation,
+    //     isCorrect: guess === word.translation,
+    //   };
+    //   res.json(responseObject);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = languageRouter;
