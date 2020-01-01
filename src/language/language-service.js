@@ -7,7 +7,7 @@ const LanguageService = {
         "language.name",
         "language.user_id",
         "language.head",
-        "language.total_score"
+        "language.total_score",
       )
       .where("language.user_id", user_id)
       .first();
@@ -24,12 +24,12 @@ const LanguageService = {
         "next",
         "memory_value",
         "correct_count",
-        "incorrect_count"
+        "incorrect_count",
       )
       .where({ language_id });
   },
 
-  updateLanguageHead(db, user_id, newHead) {
+  updateHead(db, user_id, newHead) {
     return db
       .from("language")
       .where("language.user_id", user_id)
@@ -39,36 +39,36 @@ const LanguageService = {
   correctAnswer(db, id) {
     return db
       .from("word")
-      .where({ id })
-      .increment("correct_count", 1);
+      .where(id, id)
+      .increment("correct_count");
   },
 
   incorrectAnswer(db, id) {
     return db
       .from("word")
-      .where({ id })
-      .increment("incorrect_count", 1);
+      .where(id, id)
+      .increment("incorrect_count");
   },
 
   incrementTotalScore(db, user_id) {
     return db
       .from("language")
       .where({ user_id: user_id })
-      .increment("total_score", 1);
+      .increment("total_score");
   },
 
-  updateMemValue(db, id, mem) {
+  updateMemory(db, id, newMem) {
     return db
       .from("word")
-      .where({ id })
-      .update({ memory_value: mem });
+      .where(id, id)
+      .update({ memory_value: newMem });
   },
-  updateNextValue(db, id, nex) {
+  updateNext(db, id, nextItem) {
     return db
       .from("word")
-      .where({ id })
-      .update({ next: nex });
-  }
+      .where(id, id)
+      .update(next, nextItem);
+  },
 };
 
 module.exports = LanguageService;
