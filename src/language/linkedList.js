@@ -1,6 +1,6 @@
-class Node {
-  constructor(data, next = null) {
-    this.data = data;
+class _Node {
+  constructor(value, next) {
+    this.value = value;
     this.next = next;
   }
 }
@@ -8,145 +8,165 @@ class Node {
 class LinkedList {
   constructor() {
     this.head = null;
-    this.size = 0;
   }
-
-  // at to front
-  shiftItem(data) {
-    this.head = new Node(data, this.head);
-    this.size++;
+  itemUnshift(item) {
+    this.head = new _Node(item, this.head);
   }
-
-  // add to back
-  pushItem(data) {
-    const node = new Node(data);
-    let last = null;
-    if (!this.head) {
-      this.head = node;
+  itemPush(item) {
+    if (this.head === null) {
+      this.itemUnshift(item);
     } else {
-      last = this.head;
-      while (last.next) {
-        last = last.next;
+      let tempNode = this.head;
+      while (tempNode.next !== null) {
+        tempNode = tempNode.next;
       }
-      last.next = node;
+      tempNode.next = new _Node(item, null);
     }
-    this.size++;
   }
-
-  // insert at index
-  insertAt(data, index) {
-    if (!this.head) {
-      this.head = new Node(data);
-      return;
-    }
-    if (index === 0) {
-      this.shiftItem(data);
-      return;
-    }
-    let node = new Node(data);
-    let count = 0,
-      current = this.head,
-      previous;
-    while (count < index) {
-      previous = current;
-      count++;
-      current = current.next;
-    }
-    node.next = current;
-    previous.next = node;
-    this.size++;
-  }
-
-  // insert 1 index after target
-  insertAfter(value, index) {
-    index + 1 > this.size
-      ? this.pushItem(value)
-      : this.insertAt(value, index + 1);
-  }
-
-  // insert 1 index before target
-  insertBefore(value, index) {
-    index - 1 > 0 ? this.insertAt(value, index - 1) : this.pushItem(value);
-  }
-
-  find(value) {
+  findId(id) {
     let currNode = this.head;
     if (!this.head) {
       return null;
     }
-    while (currNode.data !== value) {
-      currNode.next === null ? null : (currNode = currNode.next);
+
+    while (currNode.value.id !== id) {
+      if (currNode.next === null) {
+        return null;
+      } else {
+        currNode = currNode.next;
+      }
     }
     return currNode;
   }
-
-  findPrevious(value) {
+  find(item) {
     let currNode = this.head;
-    if (currNode === null) {
-      return "empty list";
-    } else {
-      let tempNode = currNode;
-      while (currNode.data !== value) {
-        if (currNode.next === null) {
-          return "no such value";
-        } else {
-          tempNode = currNode;
-          currNode = currNode.next;
-        }
+    if (!this.head) {
+      return null;
+    }
+    while (currNode.value !== item) {
+      if (currNode.next === null) {
+        return null;
+      } else {
+        currNode = currNode.next;
       }
-      return tempNode;
+    }
+    return currNode;
+  }
+  removeById(id) {
+    if (!this.head) {
+      return null;
+    }
+    if (this.head.value.id === id) {
+      this.head = this.head.next;
+      return;
+    }
+    let currNode = this.head;
+    let previousNode = this.head;
+
+    while (currNode !== null && currNode.value.id !== id) {
+      previousNode = currNode;
+      currNode = currNode.next;
+    }
+    if (currNode === null) {
+      console.log("Item not found");
+      return;
+    }
+    previousNode.next = currNode.next;
+  }
+  remove(item) {
+    if (!this.head) {
+      return null;
+    }
+
+    if (this.head.value === item) {
+      this.head = this.head.next;
+      return;
+    }
+
+    let currNode = this.head;
+    let previousNode = this.head;
+
+    while (currNode !== null && currNode.value !== item) {
+      previousNode = currNode;
+      currNode = currNode.next;
+    }
+
+    if (currNode === null) {
+      console.log("Item not found");
+      return;
+    }
+
+    previousNode.next = currNode.next;
+  }
+  insertBefore(newItem, nextItem) {
+    if (!this.head) {
+      return null;
+    }
+
+    if (this.head.value === nextItem) {
+      this.itemUnshift(newItem);
+    }
+
+    let currNode = this.head;
+    let previousNode = this.head;
+
+    while (currNode !== null && currNode.value !== nextItem) {
+      previousNode = currNode;
+      currNode = currNode.next;
+    }
+
+    if (currNode === null) {
+      console.log("Item not found");
+      return;
+    }
+    let newNode = new _Node(newItem, previousNode.next);
+    previousNode.next = newNode;
+  }
+  insertAfter(newItem, prevItem) {
+    if (!this.head) {
+      return null;
+    }
+    let currNode = this.head;
+
+    while (currNode !== null && currNode.value !== prevItem) {
+      currNode = currNode.next;
+    }
+    if (currNode === null) {
+      console.log("Item not found");
+      return;
+    }
+    if (prevItem.next === null) {
+      this.itemPush(newItem);
+      return;
+    }
+    let newNode = new _Node(newItem, currNode.next);
+    currNode.next = newNode;
+  }
+  insertAt(newItem, pos) {
+    let stepper = 0;
+    let currNode = this.head;
+    while (stepper !== pos) {
+      stepper++;
+      currNode = this.head.next;
+    }
+    if (currNode === null) {
+      console.log("Item not found");
+      return;
+    }
+    if (stepper === pos) {
+      this.insertAfter(newItem, currNode.value);
+      return;
     }
   }
-
-  // Not sure if this will work properly tbh
-  // but it looks real nice!
-  remove(item) {
-    let prev = this.findPrevious(item);
-    let target = this.find(item);
-    prev.next = target.next;
-  }
-  // if (!this.head) {
-  //   return null;
-  // }
-  // if (this.head.data === item) {
-  //   this.head = this.head.next;
-  //   return;
-  // }
-  // let currNode = this.head;
-  // let previousNode = this.head;
-  // while (currNode !== null && currNode.data !== item) {
-  //   previousNode = currNode;
-  //   currNode = currNode.next;
-  // }
-  // if (currNode === null) {
-  //   return;
-  // }
-  // previousNode.next = currNode.next;
-
   display() {
     let currNode = this.head;
     let str = "";
     while (currNode.next !== null) {
-      str = str + currNode.data + ", ";
+      str = str + currNode.value.original + ", ";
       currNode = currNode.next;
     }
+    str = str + currNode.value.original;
     return str;
-  }
-
-  isEmpty() {
-    return this.size === 0;
-  }
-
-  findLast() {
-    let currNode = this.head;
-    if (currNode === null) {
-      return "empty list";
-    } else {
-      while (currNode.next !== null) {
-        currNode = currNode.next;
-      }
-      return currNode;
-    }
   }
 }
 
