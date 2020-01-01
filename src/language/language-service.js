@@ -15,6 +15,9 @@ const LanguageService = {
         "language.user_id",
         "language.head",
         "language.total_score",
+<<<<<<< HEAD
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
+=======
 >>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
       )
       .where('language.user_id', user_id)
@@ -51,6 +54,9 @@ const LanguageService = {
   },
 
   updateHead(db, user_id, newHead) {
+<<<<<<< HEAD
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
+=======
 >>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
     return db
       .from('word')
@@ -75,6 +81,9 @@ const LanguageService = {
       .from("word")
       .where(id, id)
       .increment("correct_count");
+<<<<<<< HEAD
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
+=======
 >>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
   },
   incorrectAnswer(db, word) {
@@ -92,6 +101,7 @@ const LanguageService = {
       .from("word")
       .where(id, id)
       .increment("incorrect_count");
+<<<<<<< HEAD
 >>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
   },
   updateTotalScore(db, language) {
@@ -104,6 +114,8 @@ const LanguageService = {
       .where({ id: language.id })
       .returning('*')
       .then(([language]) => language);
+=======
+>>>>>>> 6d9911fdc42ed8572182e2c07e682335aa64e8e7
   },
 
   getHeadWord(db, language_id, language_head){

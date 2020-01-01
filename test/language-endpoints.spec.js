@@ -27,13 +27,13 @@ describe("Language Endpoints", function() {
       {
         title: `GET /api/language/head`,
         path: `/api/language/head`,
-        method: supertest(app).get
+        method: supertest(app).get,
       },
       {
         title: `POST /api/language/guess`,
         path: `/api/language/guess`,
-        method: supertest(app).post
-      }
+        method: supertest(app).post,
+      },
     ];
 
     languageSpecificEndpoint.forEach(endpoint => {
@@ -43,7 +43,7 @@ describe("Language Endpoints", function() {
             db,
             testUsers,
             testLanguages,
-            testWords
+            testWords,
           );
         });
 
@@ -53,7 +53,7 @@ describe("Language Endpoints", function() {
             .set("Authorization", helpers.makeAuthHeader(testUsers[1]))
             .send({})
             .expect(404, {
-              error: `You don't have any languages`
+              error: `You don't have any languages`,
             });
         });
       });
@@ -65,10 +65,10 @@ describe("Language Endpoints", function() {
    **/
   describe(`GET /api/language`, () => {
     const [usersLanguage] = testLanguages.filter(
-      lang => lang.user_id === testUser.id
+      lang => lang.user_id === testUser.id,
     );
     const usersWords = testWords.filter(
-      word => word.language_id === usersLanguage.id
+      word => word.language_id === usersLanguage.id,
     );
 
     beforeEach("insert users, languages and words", () => {
@@ -76,7 +76,7 @@ describe("Language Endpoints", function() {
         db,
         testUsers,
         testLanguages,
-        testWords
+        testWords,
       );
     });
 
@@ -91,11 +91,11 @@ describe("Language Endpoints", function() {
           expect(res.body.language).to.have.property("id", usersLanguage.id);
           expect(res.body.language).to.have.property(
             "name",
-            usersLanguage.name
+            usersLanguage.name,
           );
           expect(res.body.language).to.have.property(
             "user_id",
-            usersLanguage.user_id
+            usersLanguage.user_id,
           );
           expect(res.body.language).to.have.property("total_score", 0);
           expect(res.body.language).to.have.property("head").which.is.not.null;
@@ -125,11 +125,11 @@ describe("Language Endpoints", function() {
         db,
         testUsers,
         testLanguages,
-        testWords
+        testWords,
       );
     });
 
-    it.skip(`responds with 200 and user's languages`, () => {
+    it(`responds with 200 and user's languages`, () => {
       return supertest(app)
         .get(`/api/language/head`)
         .set("Authorization", helpers.makeAuthHeader(testUser))
@@ -138,7 +138,7 @@ describe("Language Endpoints", function() {
           nextWord: headWord.original,
           totalScore: 0,
           wordCorrectCount: 0,
-          wordIncorrectCount: 0
+          wordIncorrectCount: 0,
         });
     });
   });
@@ -149,7 +149,7 @@ describe("Language Endpoints", function() {
   describe(`POST /api/language/guess`, () => {
     const [testLanguage] = testLanguages;
     const testLanguagesWords = testWords.filter(
-      w => w.language_id === testLanguage.id
+      w => w.language_id === testLanguage.id,
     );
 
     beforeEach("insert users, languages and words", () => {
@@ -157,13 +157,12 @@ describe("Language Endpoints", function() {
         db,
         testUsers,
         testLanguages,
-        testWords
+        testWords,
       );
     });
-    // passed
     it(`post guess responds with 400`, () => {
       const postBody = {
-        randomField: "test random field"
+        randomField: "test random field",
       };
 
       return supertest(app)
@@ -171,15 +170,14 @@ describe("Language Endpoints", function() {
         .set("Authorization", helpers.makeAuthHeader(testUser))
         .send(postBody)
         .expect(400, {
-          error: `Missing 'guess' in request body`
+          error: `Missing 'guess' in request body`,
         });
     });
 
     context(`Given incorrect guess`, () => {
       const incorrectPostBody = {
-        guess: "incorrect"
+        guess: "incorrect",
       };
-      // skipping for now.
       it(`responds with incorrect and moves head`, () => {
         return supertest(app)
           .post(`/api/language/guess`)
@@ -192,11 +190,9 @@ describe("Language Endpoints", function() {
             wordCorrectCount: 0,
             wordIncorrectCount: 0,
             answer: testLanguagesWords[0].translation,
-            isCorrect: false
+            isCorrect: false,
           });
       });
-      // literally impossible to get both of these passing at the same time.
-      // wip
       it(`moves the word 1 space and updates incorrect count`, async () => {
         await supertest(app)
           .post(`/api/language/guess`)
@@ -213,19 +209,19 @@ describe("Language Endpoints", function() {
             wordCorrectCount: 0,
             wordIncorrectCount: 1,
             answer: testLanguagesWords[1].translation,
-            isCorrect: false
+            isCorrect: false,
           });
       });
     });
 
     context(`Given correct guess`, () => {
       const testLanguagesWords = testWords.filter(
-        word => word.language_id === testLanguage.id
+        word => word.language_id === testLanguage.id,
       );
 
       it(`responds with correct and moves head`, () => {
         const correctPostBody = {
-          guess: testLanguagesWords[0].translation
+          guess: testLanguagesWords[0].translation,
         };
         return supertest(app)
           .post(`/api/language/guess`)
@@ -238,13 +234,13 @@ describe("Language Endpoints", function() {
             wordCorrectCount: 0,
             wordIncorrectCount: 0,
             answer: testLanguagesWords[0].translation,
-            isCorrect: true
+            isCorrect: true,
           });
       });
 
-      it.skip(`moves the word 2 spaces, increases score and correct count`, async () => {
+      it(`moves the word 2 spaces, increases score and correct count`, async () => {
         let correctPostBody = {
-          guess: testLanguagesWords[0].translation
+          guess: testLanguagesWords[0].translation,
         };
         await supertest(app)
           .post(`/api/language/guess`)
@@ -252,7 +248,7 @@ describe("Language Endpoints", function() {
           .send(correctPostBody);
 
         correctPostBody = {
-          guess: testLanguagesWords[1].translation
+          guess: testLanguagesWords[1].translation,
         };
         await supertest(app)
           .post(`/api/language/guess`)
@@ -264,11 +260,11 @@ describe("Language Endpoints", function() {
             wordCorrectCount: 0,
             wordIncorrectCount: 0,
             answer: testLanguagesWords[1].translation,
-            isCorrect: true
+            isCorrect: true,
           });
 
         correctPostBody = {
-          guess: testLanguagesWords[2].translation
+          guess: testLanguagesWords[2].translation,
         };
         await supertest(app)
           .post(`/api/language/guess`)
@@ -280,7 +276,7 @@ describe("Language Endpoints", function() {
             wordCorrectCount: 1,
             wordIncorrectCount: 0,
             answer: testLanguagesWords[2].translation,
-            isCorrect: true
+            isCorrect: true,
           });
       });
     });

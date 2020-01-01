@@ -115,7 +115,7 @@ function cleanTables(db) {
         `TRUNCATE
         "word",
         "language",
-        "users"`,
+        "users";`,
       )
       .then(() =>
         Promise.all([
