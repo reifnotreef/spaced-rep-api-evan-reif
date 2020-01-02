@@ -142,32 +142,43 @@ class LinkedList {
     let newNode = new _Node(newItem, currNode.next);
     currNode.next = newNode;
   }
-  insertAt(newItem, pos) {
-    let stepper = 0;
-    let currNode = this.head;
-    while (stepper !== pos) {
-      stepper++;
-      currNode = this.head.next;
-    }
-    if (currNode === null) {
-      console.log("Item not found");
-      return;
-    }
-    if (stepper === pos) {
-      this.insertAfter(newItem, currNode.value);
-      return;
+  insertAt(newNode, index) {
+    if (this.head === null) {
+      this.insertFirst(newNode);
+    } else {
+      let tempNode = this.head;
+      let prevNode = this.head;
+      let count = 0;
+      while (tempNode.next !== null && count < index) {
+        count++;
+        prevNode = tempNode;
+        tempNode = tempNode.next;
+      }
+      prevNode.next = new _Node(newNode, tempNode);
     }
   }
   display() {
     let currNode = this.head;
     let str = "";
     while (currNode.next !== null) {
-      str = str + currNode.value.original + ", ";
+      str = str + currNode.value.id + ", ";
       currNode = currNode.next;
     }
-    str = str + currNode.value.original;
+    str = str + currNode.value.id;
     return str;
   }
+//   display() {
+//     let Arr = '[';
+//     if (this.head === null) {
+//         return Arr + ']'
+//     }
+//     let tempNode = this.head;
+//     while (tempNode.next !== null) {
+//         Arr += tempNode.value.correct_count + ', ';
+//         tempNode = tempNode.next;
+//     }
+//     return Arr + tempNode.value.correct_count + ']'
+// }
 }
 
 module.exports = LinkedList;

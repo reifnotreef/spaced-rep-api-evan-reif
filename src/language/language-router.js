@@ -68,7 +68,7 @@ languageRouter.get("/head", async (req, res, next) => {
 
 languageRouter.post("/guess", jsonBodyParser, async (req, res, next) => {
   const { guess } = req.body;
-  const user_id = req.user.id
+  const user_id = req.user.id;
   if (guess === undefined) {
     return res.status(400).json({ error: "Missing 'guess' in request body" });
   }
@@ -77,61 +77,64 @@ languageRouter.post("/guess", jsonBodyParser, async (req, res, next) => {
       req.app.get("db"),
       req.language.user_id
     );
-    const words = await LanguageService.getLanguageWords(
+    let words = await LanguageService.getLanguageWords(
       req.app.get("db"),
       req.language.id
     );
-    const startingList = new linkedList();
-    const currList = new linkedList();
-    await words.forEach(word => startingList.itemPush(word));
+    let currList = new linkedList();
     await words.forEach(word => currList.itemPush(word));
-    let isCorrect = false;
-    let memV = 1;
-    let totalScore = language.total_score;
-    if (guess === startingList.head.value.translation) {
-      // console.log("correct");
+    let isCorrect; // hold boolean for correctness
+    if (guess === currList.head.value.translation) {
       isCorrect = true;
-      memV = memV * 2;
-      totalScore += 1;
+      language.total_score = language.total_score + 1;
       currList.head.value.correct_count += 1;
+      currList.head.value.memory_value *= 2;
+      await LanguageService.incrementTotalScore(req.app.get("db"), user_id);
       await LanguageService.correctAnswer(
         req.app.get("db"),
         currList.head.value.id
       );
-      await LanguageService.incrementTotalScore(
+      await LanguageService.updateMemory(
         req.app.get("db"),
-        user_id,
-        totalScore
+        currList.head.value.id,
+        currList.head.value.memory_value
       );
     } else {
-      memV = 1;
-      await LanguageService.incorrectAnswer(req.app.get("db"), currList.head.value.id);
+      isCorrect = false;
+      currList.head.value.memory_value = 1;
+      await LanguageService.incorrectAnswer(
+        req.app.get("db"),
+        currList.head.value.id
+      );
+      await LanguageService.updateMemory(
+        req.app.get("db"),
+        currList.head.value.id,
+        currList.head.value.memory_value
+      );
     }
-    let answer = currList.head.value.translation
-    let nextWord = currList.head.next.value.original
-    let wordIncorrectCount = currList.head.value.incorrect_count
-    await currList.insertAt(currList.head.value, memV);
-    // console.log("after insert " + currList.display());
-    await currList.removeById(currList.head.value.id);
-    let wordCorrectCount = currList.head.value.correct_count
-    // console.log("after remove " + currList.display());
-    let currWord = currList.head
-    while(currWord !== null) {
+    let answer = currList.head.value.translation;
+    await currList.insertAt(
+      currList.head.value,
+      currList.head.value.memory_value + 1
+    );
+    await currList.remove(currList.head.value);
+    let currWord = currList.head;
+    while (currWord !== null) {
       await LanguageService.updateNextValue(
         req.app.get("db"),
         currWord.value.id,
         currWord.value.next
-      )
-      currWord = currWord.next
+      );
+      currWord = currWord.next;
     }
 
     let resObj = {
       answer: answer,
       isCorrect: isCorrect,
-      nextWord: nextWord,
-      totalScore: totalScore,
-      wordCorrectCount: wordCorrectCount,
-      wordIncorrectCount: wordIncorrectCount
+      nextWord: currList.head.value.original,
+      totalScore: language.total_score,
+      wordCorrectCount: currList.head.value.correct_count,
+      wordIncorrectCount: currList.head.value.incorrect_count
     };
     res.json(resObj);
   } catch (error) {

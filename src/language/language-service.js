@@ -39,8 +39,8 @@ const LanguageService = {
   correctAnswer(db, id) {
     return db
       .from("word")
-      .where(id, id)
-      .increment("correct_count", 1);
+      .where({id})
+      .increment("correct_count");
   },
 
   incorrectAnswer(db, id) {
@@ -63,9 +63,18 @@ const LanguageService = {
       .where(id, id)
       .update({ memory_value: newMem });
   },
-  updateNextValue(db, id, nex){
-    return (db.from('word').where({id}).update({next: nex}));
-  }
+  updateNextValue(db, id, nex) {
+    return db
+      .from("word")
+      .where({ id })
+      .update({ next: nex });
+  },
+  // updateAll(db, id, word) {
+  //   return db
+  //     .from("word")
+  //     .where({ id })
+  //     .update({ word });
+  // }
 };
 
 module.exports = LanguageService;
