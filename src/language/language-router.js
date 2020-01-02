@@ -68,6 +68,7 @@ languageRouter.get("/head", async (req, res, next) => {
 
 languageRouter.post("/guess", jsonBodyParser, async (req, res, next) => {
   const { guess } = req.body;
+  const user_id = req.user.id
   if (guess === undefined) {
     return res.status(400).json({ error: "Missing 'guess' in request body" });
   }
@@ -86,36 +87,34 @@ languageRouter.post("/guess", jsonBodyParser, async (req, res, next) => {
     await words.forEach(word => currList.itemPush(word));
     let isCorrect = false;
     let memV = 1;
-    // let target = startingList.head;
-    // console.log(target)
-    if (guess === startingList.head.data) {
-      console.log("correct");
+    let totalScore = language.total_score;
+    if (guess === startingList.head.value.translation) {
+      // console.log("correct");
       isCorrect = true;
-      memV *= 2;
+      memV = memV * 2;
+      totalScore += 1;
+      currList.head.value.correct_count += 1;
       await LanguageService.correctAnswer(
         req.app.get("db"),
-        currList.head.value.id,
-        currList.head.value.correct_count
+        currList.head.value.id
       );
       await LanguageService.incrementTotalScore(
         req.app.get("db"),
-        currList.head.value.id,
-        language.total_score
+        user_id,
+        totalScore
       );
     } else {
-      console.log("incorrect");
       memV = 1;
       await LanguageService.incorrectAnswer(req.app.get("db"), currList.head.value.id);
     }
-    // console.log("before insert " + currList.display());
     let answer = currList.head.value.translation
-    let wordCorrectCount = currList.head.value.correct_count
-    let wordIncorrectCount = currList.head.value.incorrect_count
     let nextWord = currList.head.next.value.original
+    let wordIncorrectCount = currList.head.value.incorrect_count
     await currList.insertAt(currList.head.value, memV);
     // console.log("after insert " + currList.display());
     await currList.removeById(currList.head.value.id);
-    console.log("after stuff " + currList.display());
+    let wordCorrectCount = currList.head.value.correct_count
+    // console.log("after remove " + currList.display());
     let currWord = currList.head
     while(currWord !== null) {
       await LanguageService.updateNextValue(
@@ -126,12 +125,11 @@ languageRouter.post("/guess", jsonBodyParser, async (req, res, next) => {
       currWord = currWord.next
     }
 
-
     let resObj = {
       answer: answer,
       isCorrect: isCorrect,
       nextWord: nextWord,
-      totalScore: language.total_score,
+      totalScore: totalScore,
       wordCorrectCount: wordCorrectCount,
       wordIncorrectCount: wordIncorrectCount
     };
