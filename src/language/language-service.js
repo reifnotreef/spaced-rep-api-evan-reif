@@ -46,15 +46,15 @@ const LanguageService = {
   incorrectAnswer(db, id) {
     return db
       .from("word")
-      .where(id, id)
-      .increment("incorrect_count", 1);
+      .where({id})
+      .increment("incorrect_count");
   },
 
   incrementTotalScore(db, user_id) {
     return db
       .from("language")
-      .where({ user_id: user_id })
-      .increment("total_score", 1);
+      .where({user_id})
+      .increment("total_score");
   },
 
   updateMemory(db, id, newMem) {

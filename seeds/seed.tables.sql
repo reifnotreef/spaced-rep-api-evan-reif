@@ -28,7 +28,7 @@ VALUES
     (5, 1, 'sagittarius', 'archer', 6),
     (6, 1, 'malleus', 'hammer', 7),
     (7, 1, 'panis', 'bread', 8),
-    (8, 1, 'lodix', 'lodix', 9),
+    (8, 1, 'aedificium', 'building', 9),
     (9, 1, 'rota', 'wheel', 10),
     (10, 1, 'fenestra', 'window', 11),
     (11, 1, 'janua', 'door', 12),

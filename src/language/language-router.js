@@ -55,6 +55,7 @@ languageRouter.get("/head", async (req, res, next) => {
     );
     const currentWord = words.find(element => element.id === language.head);
     const responseObject = {
+      // answer: currentWord.translation,
       nextWord: currentWord.original,
       wordCorrectCount: currentWord.correct_count,
       wordIncorrectCount: currentWord.incorrect_count,
@@ -84,7 +85,7 @@ languageRouter.post("/guess", jsonBodyParser, async (req, res, next) => {
     let currList = new linkedList();
     await words.forEach(word => currList.itemPush(word));
     let isCorrect; // hold boolean for correctness
-    if (guess === currList.head.value.translation) {
+    if (guess == currList.head.value.translation) {
       isCorrect = true;
       language.total_score = language.total_score + 1;
       currList.head.value.correct_count += 1;
@@ -127,6 +128,12 @@ languageRouter.post("/guess", jsonBodyParser, async (req, res, next) => {
       );
       currWord = currWord.next;
     }
+    // await updateHead(db, user_id, newHead)
+    await LanguageService.updateHead(
+      req.app.get("db"),
+      user_id,
+      currList.head.value.id
+    )
 
     let resObj = {
       answer: answer,
